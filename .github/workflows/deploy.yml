@@ -30,17 +30,22 @@ jobs:
         with:
           node-version: 20
 
+      - name: 启用 pnpm
+        # 版本由 package.json 的 packageManager 字段锁定，这里不另写版本号，
+        # 免得两处不一致。corepack 是 Node 自带的，不需要额外的 action。
+        run: corepack enable
+
       - name: 配置 Pages
         # v6 修了 v4 在 Node 20 上的 punycode/url.parse 弃用警告
         uses: actions/configure-pages@v6
 
       - name: 安装依赖
-        # 用 ci 而非 install：严格按 package-lock.json 装，锁文件与 package.json
-        # 不一致时直接失败，不会静默漂移出一份和本地不同的依赖树。
-        run: npm ci
+        # 严格按 pnpm-lock.yaml 装：锁文件与 package.json 不一致时直接失败，
+        # 不会静默漂移出一份和本地不同的依赖树。
+        run: pnpm install --frozen-lockfile
 
       - name: 构建站点
-        run: npm run build
+        run: pnpm build
 
       - name: 上传产物
         uses: actions/upload-pages-artifact@v5

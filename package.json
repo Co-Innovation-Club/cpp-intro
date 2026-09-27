@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "C++入门文档（VitePress）",
+  "packageManager": "pnpm@12.6.0",
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",

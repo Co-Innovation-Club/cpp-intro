@@ -12,12 +12,17 @@
 
 ## 本地开发
 
+本项目用 pnpm 管理依赖，版本由 `package.json` 的 `packageManager` 字段锁定。
+
 ```bash
-npm install
-npm run dev      # 本地预览
-npm run build    # 构建静态站点
-npm run preview  # 预览构建产物
+pnpm install       # 安装依赖
+pnpm dev           # 本地预览
+pnpm build         # 构建静态站点
+pnpm preview       # 预览构建产物
 ```
+
+仓库里只有 `pnpm-lock.yaml`，另跑 `npm install` 会多出一份 `package-lock.json`，
+两套锁文件并存会让本地与 CI 装出不同的依赖树。
 
 ## 目录结构
 

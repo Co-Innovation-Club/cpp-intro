@@ -1,4 +1,8 @@
 node_modules
+# 本项目用 pnpm 管理依赖，锁文件是 pnpm-lock.yaml。
+# 若误跑 npm install 会另生成 package-lock.json，两套锁并存会让本地与 CI
+# 装出不同的依赖树，这里直接忽略掉，避免误提交。
+package-lock.json
 docs/.vitepress/cache
 docs/.vitepress/dist
 docs/.vitepress/config.mts.timestamp-*.mjs
