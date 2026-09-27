@@ -9,14 +9,16 @@ const execFileAsync = promisify(execFile)
 
 /**
  * 部署域名。VitePress 内置 sitemap、生成的 robots.txt 与 feed.xml 都用这里。
- * GitHub Pages 项目页的地址形如 https://<用户名>.github.io/<仓库名>/，末尾不带斜杠。
+ * GitHub Pages 项目页的地址形如 https://<组织名>.github.io/<仓库名>/，末尾不带斜杠。
+ * 组织名一律小写：GitHub 的命名空间不区分大小写，但 Pages 域名习惯用小写，
+ * 且这里的值会原样写进 sitemap.xml 与 feed.xml，大小写混写不方便核对。
  */
-const SITE_URL = 'https://semishell.github.io/cpp-intro'
+const SITE_URL = 'https://co-innovation-club.github.io/cpp-intro'
 
 /**
  * 站点源码仓库地址。
  */
-const REPO_URL = 'https://github.com/SemiShell/cpp-intro'
+const REPO_URL = 'https://github.com/co-innovation-club/cpp-intro'
 
 const SITE_TITLE = 'C++入门指南'
 const SITE_DESCRIPTION = 'C++入门文档，所有宏大的数字世界，都始于终端里的一句回应'

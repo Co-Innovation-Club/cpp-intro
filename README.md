@@ -2,7 +2,7 @@
 
 面向 C++ 初学者的入门文档，基于 VitePress 构建，部署在 GitHub Pages。
 
-在线地址：<https://semishell.github.io/cpp-intro/>
+在线地址：<https://co-innovation-club.github.io/cpp-intro/>
 
 ## 内容
 
