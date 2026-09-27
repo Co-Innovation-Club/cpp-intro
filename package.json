@@ -1,0 +1,15 @@
+{
+  "name": "cpp-intro",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "C++入门文档（VitePress）",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.3"
+  }
+}

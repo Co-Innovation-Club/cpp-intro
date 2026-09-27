@@ -1,0 +1,706 @@
+/* 全局主题变量：以墨色为底、朱红为强调，呼应「小熊猫」的红棕 */
+:root {
+  --vp-font-family-base: 'Inter var', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Source Han Sans SC', sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace;
+
+  --vp-c-brand-1: #a8442f;
+  --vp-c-brand-2: #c05036;
+  --vp-c-brand-3: #d9603f;
+  --vp-c-brand-soft: rgba(217, 96, 63, 0.13);
+
+  /* 毛玻璃底色：导航栏与悬浮侧栏共用。放变量里是为了只写一处深浅两套，
+   * 组件里直接 var() 引用即可，不必在 scoped 样式里写 :global 选择器
+   * （Vue 的 scoped CSS 编译 :global(html:not(.dark)) .foo 时会把 .foo 丢掉）。 */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+}
+
+.dark {
+  --vp-c-bg: #12141a;
+  --vp-c-bg-alt: #171a21;
+  --vp-c-bg-soft: #1b1f27;
+  --vp-c-bg-elv: #1b1f27;
+
+  --vp-c-brand-1: #e8836a;
+  --vp-c-brand-2: #d9603f;
+  --vp-c-brand-3: #a8442f;
+  --vp-c-brand-soft: rgba(217, 96, 63, 0.16);
+
+  --glass-bg: rgba(18, 20, 26, 0.72);
+
+  /* 深色下 VitePress 把 gutter 定为纯黑 #000000，用在页脚上边框、
+   * 移动端本地导航下边框、代码块分隔线上。纯黑比页面底色 #12141a 还暗，
+   * 读起来像一道阴影缝，与站内其它分隔线（--vp-c-divider #2e2e32、
+   * --vp-c-border #3c3f44，都比底色亮）不是一套。改成分隔色，统一口径。 */
+  --vp-c-gutter: var(--vp-c-divider);
+}
+
+/* 404 页：整块在正文区垂直居中，保留英文原版那份从容的留白
+ *
+ * VitePress 原版给 .NotFound 的上下内边距是 96px / 168px（≥768px），
+ * 内容因此压在屏幕上方，下方空出近半屏。留白本身是这页的意图，
+ * 但重心偏上会让页面看起来「没排完」。这里把内容改为在正文区居中：
+ * 正文区 = 视口减去导航栏（64px）与页脚（约 140px）。
+ *
+ * 减去页脚高度是为了让页脚也留在首屏内——若按整屏居中，
+ * 页脚会被推出视口，多出一条滚动条，反而破坏了留白的完整性。
+ * 实测各档位内容中心与正文区中心恒差 −106px（即页脚高度的半份），
+ * 页脚始终可见，无滚动条。
+ *
+ * 只改排列，不动 96/168 的内边距——内边距是文字与边缘的呼吸，
+ * 那部分属于原版设计，保留。
+ */
+@media (min-width: 768px) {
+  .NotFound {
+    min-height: calc(100vh - 64px - 140px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+}
+
+/* 首页：首屏保持满幅，辉光在视口两侧自然渐隐；首屏内容与正文统一到同一居中栏 */
+.Layout.cover-page .cover__inner,
+.Layout.cover-page .cover ~ * {
+  --cover-gutter: 24px;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: var(--cover-gutter);
+  box-sizing: border-box;
+}
+
+@media (min-width: 1440px) {
+  .Layout.cover-page .cover__inner,
+  .Layout.cover-page .cover ~ * {
+    max-width: 1240px;
+  }
+}
+
+/* 导航栏：毛玻璃悬浮
+ *
+ * 滚动时正文从导航栏下方穿过，半透明底 + 背景模糊让下方内容透出来，
+ * 比纯色底更轻薄，也不会在正文与导航之间切出一条硬边。
+ * 底色取页面底色的 72% 透明度（--glass-bg，深浅各一套）——
+ * 再低会让标题在密集正文上不易读。
+ * saturate(180%) 是 iOS / macOS 的惯用值，防止模糊后颜色发灰。
+ *
+ * 用 !important 是因为 VitePress 给 .VPNavBar 的底色写在带
+ * [data-v-xxx] 的 scoped 规则里，特异性高于本文件的 1 个 class。
+ */
+.VPNavBar {
+  background-color: var(--glass-bg) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  backdrop-filter: saturate(180%) blur(14px);
+}
+
+/* 导航栏底部的分隔线（.divider-line）：修掉侧栏残留的让位
+ *
+ * VitePress 导航栏底部有一个专门画分隔线的元素：
+ *   <div class="divider"><div class="divider-line" /></div>
+ * 高 1px、宽 100%，颜色取 --vp-c-gutter。
+ *
+ * 但 @media (min-width:1440px) 给 .VPNavBar.has-sidebar .divider 加了
+ * padding-left: calc((100vw - 1440px)/2 + 272px)——本意是让这条线
+ * 从侧边栏右缘起画，与 272px 侧栏错开。本站内页已无侧栏，
+ * 这个缩进没人接，线就从 x≈352（搜索框起点）才开始，
+ * 左侧标题区下方缺一段，看起来像「凭空多出一条线」。
+ *
+ * 两处修正：
+ *   1. 去掉 padding-left，让线从最左贯穿到最右，成为一条完整的分隔
+ *   2. 颜色由 --vp-c-gutter（深色下是纯黑 rgb(0,0,0)，压在正文上很硬）
+ *      换成 --vp-c-divider，与站内其它分隔线同一口径
+ */
+@media (min-width: 1440px) {
+  .Layout:not(.cover-page) .VPNavBar.has-sidebar .divider {
+    padding-left: 0;
+  }
+}
+
+.Layout:not(.cover-page) .VPNavBar .divider-line {
+  background-color: var(--vp-c-divider) !important;
+}
+
+/* 内页导航栏的 .content-body 实底：去掉，让整条导航栏只有一个底
+ *
+ * VitePress 原版在 ≥960px 时给 .VPNavBar:not(.home.top) .content-body
+ * 铺一层不透明底（--vp-nav-bg-color），用意是让它挡住从下方滚过的正文。
+ * 但它同时把 .VPNavBar:not(.has-sidebar) 的同类元素显式设为透明——
+ * 首页不带 has-sidebar，吃的是透明那条；内页带 has-sidebar，只吃到实底那条。
+ *
+ * 于是导航栏里叠了两层底：外层 .VPNavBar 是半透明毛玻璃（贯穿整条），
+ * 内层 .content-body 是一块实心黑（从搜索框起点铺到菜单右侧）。
+ * 结果就是标题区透、右侧实，两段之间出现一道生硬的色差截断。
+ *
+ * 内页已无侧栏，这层实底从「必要遮挡」变成「多余补丁」，故置透明——
+ * 遮挡交给外层毛玻璃即可，它贯穿整条、颜色一致。
+ */
+@media (min-width: 960px) {
+  .Layout:not(.cover-page) .VPNavBar .content-body {
+    background-color: transparent !important;
+  }
+}
+
+/* 内页导航栏标题下那条分隔线：这是给左侧栏收口用的
+ *
+ * VitePress 原版在 .VPNavBarTitle.has-sidebar .title 上加 border-bottom，
+ * 本意是让它与下方 272px 宽的侧边栏连成一条。本站内页已拆除侧边栏
+ * （见下方「内页：与首页同一套版式」），这条线失去依附对象，
+ * 只剩一段悬空的短线，等于把「这里原先是侧栏」暴露出来。故置为透明。
+ */
+.VPNavBarTitle.has-sidebar .title {
+  border-bottom-color: transparent !important;
+}
+
+/* 导航栏：首页与内页同构（搜索框、右侧控件组逐像素对齐）
+ *
+ * VitePress 给导航栏准备了两套几何，由 .VPNavBar 上有没有 has-sidebar 决定：
+ *
+ *   有侧边栏（文档页）：.container 满宽；.title 绝对定位、宽 272px；
+ *                       .content 的 padding-left = 272px（≥1440 再叠居中留白）
+ *   无侧边栏（首页）  ：.container 限宽 1376px 居中；.title 在文档流里占宽；
+ *                       .content 紧跟在标题之后
+ *
+ * 于是首页搜索框 = 容器左缘 + 标题宽 + 自己的 padding，比内页偏左。
+ *
+ * ⚠️ 这里以前是「给首页补一个固定 padding-left: 96px」。
+ * 那个常数是按旧站名（小熊猫C++使用指南，标题宽 144px）算出来的；
+ * 站名改成 C++入门指南后标题只剩 96px，常数就失效了，搜索框重新偏左 48px。
+ * 而且 ≥1440 时还会因滚动条宽度多漂 8px，固定值本来就补不平。
+ *
+ * 现在改为把内页那套几何整套搬过来：两侧用同一组公式，任何宽度都逐像素一致，
+ * 既不看标题宽度，也不受滚动条宽度影响。
+ * 标题改为绝对定位（与内页同）——品牌文字仍在 x=32，观感不变。
+ *
+ * 960px 以下两侧本就是同一套移动布局，无需处理。
+ */
+@media (min-width: 960px) {
+  .VPNavBar:not(.has-sidebar) .wrapper {
+    padding: 0;
+  }
+
+  /* 容器设为定位上下文，下面标题的绝对定位就以它为基准，
+   * 于是 100% = 容器宽（满宽），与内页那套公式的量纲一致。 */
+  .VPNavBar:not(.has-sidebar) .container {
+    position: relative;
+    max-width: 100%;
+  }
+
+  /* 标题脱离文档流，占位宽度与内页相同；
+   * 左缘用与内页完全相同的公式，品牌文字的落点因此逐像素一致。 */
+  .VPNavBar:not(.has-sidebar) .VPNavBarTitle {
+    position: absolute;
+    top: 0;
+    left: max(32px, calc((100% - (var(--vp-layout-max-width) - 64px)) / 2));
+    z-index: 2;
+    width: var(--vp-sidebar-width);
+  }
+
+  .VPNavBar:not(.has-sidebar) .content {
+    position: relative;
+    z-index: 1;
+    padding-right: 32px;
+    padding-left: var(--vp-sidebar-width);
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPNavBar:not(.has-sidebar) .content {
+    padding-right: calc((100vw - var(--vp-layout-max-width)) / 2 + 32px);
+    padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width));
+  }
+}
+
+/* 内页：与首页同一套版式——一条通栏，正文居中，不留侧边栏竖条
+ *
+ * VitePress 默认把内页做成「左侧 272px 侧边栏 + 右侧正文」的分栏结构，
+ * 靠三个元素共同撑起那道竖条：
+ *   .curtain    侧边栏顶到导航栏的 64px 底色块
+ *   .VPSidebar  侧边栏本体（fixed，自带底色与右分隔）
+ *   .VPContent  正文容器的 padding-left: 272px
+ * 三者任一留着都会露出分割，故须一并解除。
+ *
+ * 侧边栏收起后，内页的站内导航改由导航栏的「文档」进入；
+ * 正文之间用页面底部的上一页/下一页衔接。960px 以下本就是移动布局，
+ * 侧边栏走抽屉，不受这段影响。
+ *
+ * 正文容器用与首页 cover__inner 相同的口径（1180px，≥1440px 时 1240px，
+ * 两侧 24px 内缩），使两处的正文左缘落在同一条线上。
+ * 目录仍留在正文右侧，它不是分割条。
+ *
+ * 容器宽度取 fit-content 而非撑满：VitePress 的 .aside 带 flex-grow: 1，
+ * 容器一旦撑满就会把正文挤到左侧、中间空出几百像素。改成贴合内容后，
+ * 正文与目录保持 32px 间距，整组在页面居中。
+ */
+@media (min-width: 960px) {
+  .Layout:not(.cover-page) .curtain,
+  .Layout:not(.cover-page) .VPSidebar {
+    display: none;
+  }
+
+  /* 去掉 VitePress 给「限宽布局」留的两侧内边距。
+   *
+   * 它在 ≥1440px 时写的是 padding-right: calc((100vw - 1440px) / 2)，
+   * 本意是把「正文 + 侧栏」合计限宽在 1440px 内居中；左侧那条
+   * padding-left 里还叠了 272px 的侧栏宽。
+   * 本站内页已无侧栏、正文改为整页居中，这两条都失去意义：
+   * 尤其右内边距会把整块内容整体推左（1920px 下 240px，
+   * 表现为正文中心比视口中心偏左 120px）。故一并归零。 */
+  .Layout:not(.cover-page) .VPContent.has-sidebar {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: 24px;
+    box-sizing: border-box;
+  }
+
+  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container {
+    width: fit-content;
+    margin-inline: auto;
+  }
+
+  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container .aside {
+    flex: 0 0 auto;
+  }
+}
+
+/* 正文在视口里居中，目录挂到正文右侧、不参与居中计算
+ *
+ * 上面那段把 .container 设为 fit-content 居中，居中的其实是
+ * 「正文 + 目录」这一整组，于是正文被右侧的目录挤得偏左——
+ * 实测各档位恒定偏 −128px（正好是目录宽 256px 的一半）。
+ *
+ * 改为：容器退回普通块，正文自己居中；目录绝对定位到正文右缘外侧。
+ * 这样正文的中心落在视口中心上，目录仍跟随滚动贴在右侧。
+ *
+ * 只在 ≥1280px 生效：VitePress 本就在 1280px 以下隐藏目录，
+ * 那种情况下原来的 fit-content 居中已经正确（实测偏移 0）。
+ */
+@media (min-width: 1280px) {
+  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container {
+    position: relative;
+    display: block;
+    width: auto;
+    margin-inline: 0;
+  }
+
+  /* 640px = 正文栏宽 576px + 两侧各 32px 内边距，与改动前一致 */
+  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container .content {
+    max-width: 640px;
+    margin-inline: auto;
+  }
+
+  /* 352px = 正文栏半宽 320px + 正文与目录之间 32px */
+  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container .aside {
+    position: absolute;
+    top: 0;
+    left: calc(50% + 352px);
+    width: 224px;
+    max-width: none;
+    height: 100%;
+    padding-left: 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc {
+    max-width: 1240px;
+  }
+}
+
+/* 内页页脚
+ *
+ * VitePress 默认有 .VPFooter.has-sidebar { display: none }，
+ * 理由是「带侧栏的文档页底部已有上一篇/下一篇，页脚多余」。
+ * 本站只是用 CSS 把侧栏藏了起来，body 上的 has-sidebar 类还在，
+ * 于是首页之外的页面页脚全被这条规则吃掉——
+ * 页脚里的 message 与版权标识只在首页出现，内页看不到。
+ *
+ * 这里把内页的页脚显示回来。加 .Layout:not(.cover-page) 是为了排除首页：
+ * 首页走的是首页自己的版式，不受这条影响。
+ * 特异性（4 个 class）高于默认规则（2 个 class + 1 个 scope 属性），可以覆盖。
+ */
+.Layout:not(.cover-page) .VPFooter.has-sidebar {
+  display: block;
+}
+
+/* 提示框：把间距松开
+ *
+ * VitePress 默认 padding 为 16px 16px 8px——下边只有上边的一半；
+ * 标题与正文之间靠正文自身 8px 的上外边距撑着；
+ * 相邻两个提示框之间则完全没有间距，连着放两块会贴成一片。
+ * 这几点叠起来就是「挤」。
+ *
+ * 处理：
+ *   1. 上下内边距取齐并放到 20px
+ *   2. 标题与正文之间留 10px
+ *   3. 相邻提示框之间给 16px，与 .cover-nav 的 gap 同值
+ *
+ * 左右内边距写 24px 是为了跟首页那条 `.cover ~ *` 规则对齐：
+ * 后者给首屏之后的所有兄弟元素都设了 padding-inline: var(--cover-gutter)
+ * （24px），特异性 3 个 class，比这里的 .custom-block 高，
+ * 提示框的左右内边距实际由它决定。这里写明同值，免得两处打架。
+ *
+ * 配色与圆角沿用 VitePress 默认，未动。
+ */
+.custom-block {
+  padding: 20px 24px;
+  margin: 16px 0;
+  /* 圆角跟首页的卡片（.fcard / .cover-nav__item，12px）取齐。
+   * VitePress 默认是 8px，与同一页相邻的卡片对不上。 */
+  border-radius: 12px;
+}
+
+/* 正文配图：加圆角与细边框
+ *
+ * 全站所有界面元素（卡片、按钮、代码块、侧栏、徽标）都带圆角，
+ * 唯独正文里的截图是直角无边框；深色下深色截图与页面底色几乎贴在一起，
+ * 边界看不出来。给它一套与卡片相同的处理：12px 圆角 + 1px 细边框。
+ * box-sizing 取 border-box，避免 1px 边框把宽度撑出 2px 造成横向溢出。 */
+.vp-doc img {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+/* 标题与正文之间留 10px。
+ *
+ * 这里给「正文」加上外边距，而不是给「标题」加下外边距——
+ * 标题是框内第一个 p，VitePress 的
+ * `.vp-doc .custom-block p:first-child { margin: 0 }`（特异性 0,3,1）
+ * 会把它的下外边距清零，压过 `.custom-block .custom-block-title`（0,3,0）。
+ * 换到正文这一侧、用相邻兄弟选择器，就没有这个对手。 */
+.custom-block .custom-block-title + p,
+.vp-doc .custom-block .custom-block-title + p {
+  margin-top: 10px;
+}
+
+/* 末段的下外边距归零，让框内上下留白对称。
+ * 写 :last-child 而非 .custom-block p —— 后者特异性低于
+ * VitePress 的 .custom-block p+p（0,1,2），改不动正文那一段。 */
+.custom-block > p:last-child {
+  margin-bottom: 0;
+}
+
+/* 首页的提示框：外沿与卡片对齐，只占栏内宽度，两侧留出与卡片相同的内缩 */
+.Layout.cover-page .cover ~ .custom-block {
+  max-width: none;
+  margin-inline: max(var(--cover-gutter), calc((100% - 1132px) / 2));
+}
+
+@media (min-width: 1440px) {
+  .Layout.cover-page .cover ~ .custom-block {
+    margin-inline: max(var(--cover-gutter), calc((100% - 1192px) / 2));
+  }
+}
+
+/* 首屏辉光：落在首屏范围内自行渐隐，避免上下被首屏边界硬切 */
+.Layout.cover-page .cover__aura {
+  inset: 0 -10% auto -20%;
+}
+
+/* 首页正文里的章节标题 */
+.cover-section-title {
+  margin: 96px 0 8px;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+.cover-section-desc {
+  margin: 0 0 28px;
+  color: var(--vp-c-text-2);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* 首页正文底部的导航卡片 */
+.cover-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cover-nav__item {
+  display: block;
+  padding: 22px 22px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--vp-c-border);
+  background: var(--vp-c-bg-soft);
+  text-decoration: none;
+  color: var(--vp-c-text-1);
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.cover-nav__item:hover {
+  transform: translateY(-3px);
+  border-color: var(--vp-c-brand-2);
+}
+
+.cover-nav__step {
+  color: var(--vp-c-brand-1);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.cover-nav__title {
+  display: block;
+  margin: 10px 0 6px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.cover-nav__desc {
+  display: block;
+  color: var(--vp-c-text-2);
+  font-size: 13.5px;
+  line-height: 1.8;
+}
+
+@media (max-width: 560px) {
+  .cover-nav {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- 动效 ---------- */
+
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 220ms;
+  --dur-base: 420ms;
+  --dur-slow: 700ms;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* 首屏：分批上浮入场，仿IDE窗口随后升起并轻微浮动 */
+@keyframes cover-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cover-visual-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ide-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes aura-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.Layout.cover-page .cover__badge,
+.Layout.cover-page .cover__title-line,
+.Layout.cover-page .cover__desc,
+.Layout.cover-page .cover__actions,
+.Layout.cover-page .cover__note {
+  animation: cover-rise var(--dur-slow) var(--ease-out-expo) both;
+}
+
+.Layout.cover-page .cover__badge {
+  animation-delay: 60ms;
+}
+
+.Layout.cover-page .cover__title-line:first-child {
+  animation-delay: 150ms;
+}
+
+.Layout.cover-page .cover__title-line--alt {
+  animation-delay: 230ms;
+}
+
+.Layout.cover-page .cover__desc {
+  animation-delay: 310ms;
+}
+
+.Layout.cover-page .cover__actions {
+  animation-delay: 390ms;
+}
+
+.Layout.cover-page .cover__note {
+  animation-delay: 470ms;
+}
+
+.Layout.cover-page .cover__aura {
+  animation: aura-in 1100ms ease-out both;
+}
+
+.Layout.cover-page .cover__visual {
+  animation:
+    cover-visual-in 900ms var(--ease-out-expo) 260ms both,
+    ide-float 9s ease-in-out 1600ms infinite;
+}
+
+/* 进场动效：只在进入页面时播一次，向下滚动的内容不参与。
+ * 首页——英雄区以下的区块错开浮入（类由 reveal.ts 添加）；
+ * 内页——整页淡入一次，不做逐元素位移，减少对阅读的干扰。 */
+.has-reveal .reveal {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.has-reveal .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 520ms var(--ease-out-expo) var(--reveal-delay, 0ms),
+    transform 520ms var(--ease-out-expo) var(--reveal-delay, 0ms);
+}
+
+/* 内页整页淡入：比首页更弱，只有透明度变化，没有位移。
+ * 只用一条规则定义 0 态，1 态即去掉该类，避免两条同特异度规则互相覆盖。 */
+.page-fade .VPContent,
+.page-fade .VPDoc {
+  opacity: 0;
+}
+
+.page-fade-in .VPContent,
+.page-fade-in .VPDoc {
+  opacity: 1;
+  transition: opacity 380ms ease-out;
+}
+
+/* 悬停与按压反馈 */
+.Layout.cover-page .cover-nav__item,
+.Layout.cover-page .fcard {
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    background-color var(--dur-base) var(--ease-out-expo);
+}
+
+.Layout.cover-page .cover-nav__item:hover,
+.Layout.cover-page .fcard:hover {
+  transform: translateY(-4px);
+  border-color: var(--vp-c-brand-2);
+  box-shadow: 0 22px 48px -28px rgba(0, 0, 0, 0.8);
+}
+
+.Layout.cover-page .cover-nav__title,
+.Layout.cover-page .cover-nav__desc {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.Layout.cover-page .cover-nav__item:hover .cover-nav__title,
+.Layout.cover-page .cover-nav__item:hover .cover-nav__desc {
+  transform: translateX(3px);
+}
+
+.Layout.cover-page .cover__btn {
+  transition:
+    transform var(--dur-fast) var(--ease-out-expo),
+    border-color var(--dur-fast) var(--ease-out-expo),
+    box-shadow var(--dur-fast) var(--ease-out-expo);
+}
+
+.Layout.cover-page .cover__btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px -20px rgba(0, 0, 0, 0.75);
+}
+
+.Layout.cover-page .cover__btn:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* 深浅色切换时不做硬跳 */
+html,
+body,
+.VPNavBar,
+.VPSidebar,
+.VPDoc,
+.cover,
+.vp-doc pre,
+.vp-doc div[class*='language-'] {
+  transition:
+    background-color var(--dur-base) ease,
+    border-color var(--dur-base) ease,
+    color var(--dur-base) ease;
+}
+
+/* 链接与图标一类的细节过渡 */
+.vp-doc a,
+.VPNavBarMenuLink,
+.VPSidebarItem .link,
+.VPDocAsideOutline .link,
+.VPSocialLink {
+  transition:
+    color var(--dur-fast) ease,
+    opacity var(--dur-fast) ease;
+}
+
+/* 指针悬停时才启用的位移，触屏不受影响 */
+@media (hover: none) {
+  .Layout.cover-page .cover-nav__item:hover,
+  .Layout.cover-page .fcard:hover,
+  .Layout.cover-page .cover__btn:hover,
+  .Layout.cover-page .cover-nav__item:hover .cover-nav__title,
+  .Layout.cover-page .cover-nav__item:hover .cover-nav__desc {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Layout.cover-page .cover__badge,
+  .Layout.cover-page .cover__title-line,
+  .Layout.cover-page .cover__desc,
+  .Layout.cover-page .cover__actions,
+  .Layout.cover-page .cover__note,
+  .Layout.cover-page .cover__aura,
+  .Layout.cover-page .cover__visual {
+    animation: none;
+  }
+
+  .has-reveal .reveal,
+  .has-reveal .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .page-fade .VPContent,
+  .page-fade .VPDoc,
+  .page-fade-in .VPContent,
+  .page-fade-in .VPDoc {
+    opacity: 1;
+    transition: none;
+  }
+}

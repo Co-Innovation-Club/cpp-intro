@@ -1,0 +1,59 @@
+name: 部署到 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          # 拉全量历史：feed.xml 的发布日期取自每个文件的最后提交时间，
+          # 浅检出（默认 1）会让 git log 查不到，全部退回构建时刻。
+          fetch-depth: 0
+
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 配置 Pages
+        # v6 修了 v4 在 Node 20 上的 punycode/url.parse 弃用警告
+        uses: actions/configure-pages@v6
+
+      - name: 安装依赖
+        # 用 ci 而非 install：严格按 package-lock.json 装，锁文件与 package.json
+        # 不一致时直接失败，不会静默漂移出一份和本地不同的依赖树。
+        run: npm ci
+
+      - name: 构建站点
+        run: npm run build
+
+      - name: 上传产物
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署
+        id: deployment
+        uses: actions/deploy-pages@v5
