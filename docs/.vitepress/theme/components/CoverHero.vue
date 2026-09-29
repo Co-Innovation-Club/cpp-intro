@@ -16,7 +16,6 @@ import IdeWindow from './IdeWindow.vue'
 
         <h1 class="cover__title">
           <span class="cover__title-line">C++入门指南</span>
-          <span class="cover__title-line cover__title-line--alt">协同创新三号实验室</span>
         </h1>
 
         <p class="cover__desc">
@@ -28,7 +27,6 @@ import IdeWindow from './IdeWindow.vue'
             从安装开始
             <span class="cover__arrow">→</span>
           </a>
-          <a class="cover__btn" href="#about">本文档说明</a>
         </div>
 
         <p class="cover__note">
