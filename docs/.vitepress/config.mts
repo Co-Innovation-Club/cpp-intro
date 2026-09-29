@@ -107,32 +107,6 @@ export default defineConfig({
         ]
       },
       {
-        text: '标准库参考',
-        collapsed: true,
-        items: [
-          { text: 'assert.h', link: '/c/lib/assert-h' },
-          { text: 'ctype.h', link: '/c/lib/ctype-h' },
-          { text: 'errno.h', link: '/c/lib/errno-h' },
-          { text: 'float.h', link: '/c/lib/float-h' },
-          { text: 'inttypes.h', link: '/c/lib/inttypes-h' },
-          { text: 'iso646.h', link: '/c/lib/iso646-h' },
-          { text: 'limits.h', link: '/c/lib/limits-h' },
-          { text: 'locale.h', link: '/c/lib/locale-h' },
-          { text: 'math.h', link: '/c/lib/math-h' },
-          { text: 'signal.h', link: '/c/lib/signal-h' },
-          { text: 'stdarg.h', link: '/c/lib/stdarg-h' },
-          { text: 'stdbool.h', link: '/c/lib/stdbool-h' },
-          { text: 'stddef.h', link: '/c/lib/stddef-h' },
-          { text: 'stdint.h', link: '/c/lib/stdint-h' },
-          { text: 'stdio.h', link: '/c/lib/stdio-h' },
-          { text: 'stdlib.h', link: '/c/lib/stdlib-h' },
-          { text: 'string.h', link: '/c/lib/string-h' },
-          { text: 'time.h', link: '/c/lib/time-h' },
-          { text: 'wchar.h', link: '/c/lib/wchar-h' },
-          { text: 'wctype.h', link: '/c/lib/wctype-h' }
-        ]
-      },
-      {
         text: '关于本站',
         items: [{ text: '来源与致谢', link: '/about/credits' }]
       }

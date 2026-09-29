@@ -29,7 +29,7 @@ description: "本站内容来源、署名信息与许可说明"
   与 `using namespace std;`，输入输出以 `cin`/`cout` 为主，并引入 `string`、`vector` 等
   标准库用法；术语、章节标题与叙述语气随之调整，但保留原有章节划分与知识点覆盖范围。
 
-上述改写已偏离原文，如需要原稿内容，请以[原仓库](https://github.com/wangdoc/clang-tutorial)为准。
+上述内容属于改写稿，与原稿存在差异；需要引用原文时请以[原仓库](https://github.com/wangdoc/clang-tutorial)内容为准。
 
 ### 许可
 
@@ -44,8 +44,7 @@ description: "本站内容来源、署名信息与许可说明"
 
 ## 本站其它内容
 
-除上述改编栏目外，本站其余内容（含《搭建开发环境》《跑通「Hello World」》
-及首页、主题样式等）为 Co-Innovation-Club 原创。
+除上述改编栏目外，本站其余内容（含《搭建开发环境》《跑通「Hello World」》及首页、主题样式等）由 Co-Innovation-Club 编写。
 
 ## 许可总览
 
