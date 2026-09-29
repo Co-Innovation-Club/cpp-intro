@@ -4,11 +4,6 @@
 
 在线地址：<https://co-innovation-club.github.io/cpp-intro/>
 
-## 内容
-
-从安装环境、跑通第一个程序开始，写给第一次接触 C++ 的人。内容持续更新中，以在线站点为准。
-
-文档按小熊猫C++ 3.4.3279 撰写，软件仍在更新，菜单与快捷键以实际版本为准。
 
 ## 本地开发
 
@@ -20,9 +15,6 @@ pnpm dev           # 本地预览
 pnpm build         # 构建静态站点
 pnpm preview       # 预览构建产物
 ```
-
-仓库里只有 `pnpm-lock.yaml`，另跑 `npm install` 会多出一份 `package-lock.json`，
-两套锁文件并存会让本地与 CI 装出不同的依赖树。
 
 ## 目录结构
 
@@ -40,5 +32,3 @@ docs/
 Copyright (c) 2026 Co-Innovation-Club
 
 本站内容与代码以 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh)（知识共享署名 4.0 国际）许可发布，转载或修改需署名并标注许可，详见 [LICENSE](LICENSE)。
-
-该许可仅覆盖本仓库中的文档与站点代码，不覆盖小熊猫C++ 软件本身——后者是独立的开源项目，权利归其作者所有。本站为非官方内容。
