@@ -21,7 +21,7 @@ const SITE_URL = 'https://co-innovation-club.github.io/cpp-intro'
 const REPO_URL = 'https://github.com/co-innovation-club/cpp-intro'
 
 const SITE_TITLE = 'C++入门指南'
-const SITE_DESCRIPTION = 'C++入门文档，所有宏大的数字世界，都始于终端里的一句回应'
+const SITE_DESCRIPTION = 'C++ 入门文档，包含开发环境搭建、首个程序运行与 C++ 基础语法'
 
 /**
  * 部署在 GitHub Pages 项目页的子路径下，必须设 base，

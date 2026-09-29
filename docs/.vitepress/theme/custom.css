@@ -2,7 +2,23 @@
 :root {
   --vp-font-family-base: 'Inter var', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Source Han Sans SC', sans-serif;
-  --vp-font-family-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace;
+  /* 等宽字体：先是自托管的 JetBrains Mono，中文由其后一串字体兜底。
+   *
+   * JetBrains Mono 由 theme/index.ts 引入 @fontsource 的 latin 子集，随站点分发。
+   * 它只含 ASCII，代码里的符号、数字、标识符都由它渲染；
+   * 全站 695 个代码块里有 369 个带中文注释（占 53%），那些汉字它管不了，
+   * 必须靠后面的中文字体兜底——否则浏览器会把中文交给系统默认字体，
+   * Windows 上通常是宋体，字面与重心都跟 Windows 那套编程字体对不上，
+   * 同一行里中文注释会比代码高出一截，看着是歪的。
+   *
+   * 补上 PingFang SC / 微软雅黑后，中文走的是正文同一套字形，行内高度才齐。
+   * 再往后是 JetBrains Mono 加载失败时的退路：各系统自带的编程字体。
+   *
+   * 顺序上 JetBrains Mono 放第一位而不是 SF Mono：自托管的那个必须先生效，
+   * 否则同一段代码在 macOS 和 Windows 上会渲染成两个字体的不同字形。 */
+  --vp-font-family-mono: 'JetBrains Mono', 'SF Mono', SFMono-Regular, ui-monospace,
+    'Cascadia Mono', 'Cascadia Code', Menlo, Consolas, 'Liberation Mono',
+    'DejaVu Sans Mono', 'Courier New', 'PingFang SC', 'Microsoft YaHei', monospace;
 
   --vp-c-brand-1: #a8442f;
   --vp-c-brand-2: #c05036;
@@ -199,6 +215,67 @@
  * 目录绝对定位到正文右缘等）随之一并移除——默认规则即最终形态，
  * 不再需要为它解释让位。首页（cover-page）仍是自己的通栏版式，不受影响。
  */
+
+/* ---------- 正文排版 ---------- */
+
+/* 代码块：关掉编程连字
+ *
+ * JetBrains Mono、Fira Code 这类编程字体默认开启 ligature，会把 `->`、`<=`、
+ * `>=`、`!=` 这些双字符运算符合成一个字形（`->` 显示成一个箭头 →）。
+ *
+ * 本站讲 C++ 语法：`->` 是成员访问、`<=` 与 `>=` 是关系运算符，每一个都要单独认。
+ * 连字会让「书上看的是合体字形，编辑器里敲的是两个字符」对不上，
+ * 初学时尤其容易误解。教学文档要求所见即所得，所以显式关掉。
+ * liga（标准连字）、clig（上下文连字）、calt（上下文替代）三者都要关——
+ * calt 才是编程字体合成箭头的主力，只关 liga 是关不干净的。 */
+.vp-doc code,
+.vp-doc pre,
+.vp-doc div[class*='language-'],
+.vp-doc .line-numbers-wrapper {
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'clig' 0, 'calt' 0;
+}
+
+/* 正文行高：VitePress 给段落写的是 28px（16px 字号下即 1.75），列表项没设、
+ * 走继承值，两者不一致。中文方块字没有西文那种高低起伏的轮廓，
+ * 行与行之间需要比西文更大的间距才分得开，尤其是本站这种连续多屏的长段落。
+ * 统一提到 1.8，并让列表与段落同值——列表是最常用的承载形式
+ * （转义字符、格式占位符、转换说明这类清单几乎通篇都是），不该比正文更挤。
+ *
+ * 用无单位数值而非 px：这样列表里的代码块、嵌套结构按自身字号缩放，
+ * 不会被一个固定的行高压扁。 */
+.vp-doc p,
+.vp-doc summary,
+.vp-doc li,
+.vp-doc blockquote > p {
+  line-height: 1.8;
+}
+
+/* 表格字号提到 15px。
+ *
+ * VitePress 默认正文 16px、表格 14px。本站表格多是查表用的密集内容
+ * （类型取值范围、格式占位符、环境中的宏），14px 的中文偏小，
+ * 长时间盯着比对容易串行。提到 15px 后仍小于正文，维持表格的次级地位，
+ * 但比原先清楚一档。
+ *
+ * 单元格左右内边距收窄到 12px，抵掉字号变大带来的行宽增长，
+ * 免得宽表（如 stdlib 函数表）在 1440px 下更早触发横向滚动。 */
+.vp-doc th,
+.vp-doc td {
+  padding: 8px 12px;
+  font-size: 15px;
+}
+
+/* 表头：加深背景，横向滚动时与普通行区分得开。
+ *
+ * VitePress 给 th 的背景是 bg-soft，而偶数行 tr:nth-child(2n) 用的也是 bg-soft，
+ * 两者同色——表头只靠字重（600）和浅一号的文字色区分，滚动时容易看成普通首行。
+ * 这里把表头背景换成比斑马纹更深一档的 bg-alt，让两块明确分开。
+ * tr 的 background-color 是 VitePress 写在 .vp-doc tr 上的，
+ * 这里特异性（.vp-doc th）与之相同，靠本文件更晚加载生效。 */
+.vp-doc th {
+  background-color: var(--vp-c-bg-alt);
+}
 
 /* 内页页脚
  *
