@@ -29,7 +29,7 @@ docs/
 
 ## 内容来源与致谢
 
-本站「C 语言基础」栏目（`docs/c/`）的正文，改编自阮一峰（wangdoc）的
+本站「C++ 基础」栏目（`docs/cpp/`）的正文，改编自阮一峰（wangdoc）的
 [C 语言入门教程](https://github.com/wangdoc/clang-tutorial)，原作者保留署名权。
 该教程以 CC BY-SA 4.0 发布，本站在其基础上进行了格式转换与站点适配，改编部分
 同样以 CC BY-SA 4.0 发布。详细署名见 [来源与致谢](docs/about/credits.md)。

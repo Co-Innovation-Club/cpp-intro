@@ -11,6 +11,8 @@
     "preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "vitepress": "^1.6.3"
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "vitepress": "^1.6.3",
+    "vitepress-sidebar": "^1.40.0"
   }
 }

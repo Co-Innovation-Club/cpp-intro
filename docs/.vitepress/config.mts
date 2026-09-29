@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import type { SiteConfig } from 'vitepress'
-import { promises as fs } from 'node:fs'
+import { withSidebar } from 'vitepress-sidebar'
+import { promises as fs, readdirSync } from 'node:fs'
 import * as path from 'node:path'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -21,7 +22,7 @@ const SITE_URL = 'https://co-innovation-club.github.io/cpp-intro'
 const REPO_URL = 'https://github.com/co-innovation-club/cpp-intro'
 
 const SITE_TITLE = 'C++入门指南'
-const SITE_DESCRIPTION = 'C++入门文档，所有宏大的数字世界，都始于终端里的一句回应'
+const SITE_DESCRIPTION = 'C++ 入门文档，包含开发环境搭建、首个程序运行与 C++ 基础语法'
 
 /**
  * 部署在 GitHub Pages 项目页的子路径下，必须设 base，
@@ -29,7 +30,50 @@ const SITE_DESCRIPTION = 'C++入门文档，所有宏大的数字世界，都始
  */
 const BASE = '/cpp-intro/'
 
-export default defineConfig({
+/**
+ * 正文所在目录，相对运行 vitepress 时的工作目录（仓库根目录）。
+ * vitepress-sidebar 的 documentRootPath 内部是 path.join(cwd, 这个值)，
+ * 只能写相对路径，所以这里也保持相对，两处共用同一个常量。
+ */
+const DOC_ROOT = 'docs'
+
+/**
+ * 正文文件名带三位编号（`020-multibyte.md`），编号就是目录顺序，
+ * 在文件系统里按名字排序即可定位。全部正文统一用这个格式。
+ */
+const ORDER_PREFIX = /(^|\/)\d{3}-/
+
+/**
+ * 把带编号的路径还原成线上地址用的路径：`cpp/020-multibyte.md` → `cpp/multibyte.md`。
+ */
+function stripOrderPrefix(p: string): string {
+  return p.replace(ORDER_PREFIX, '$1')
+}
+
+/**
+ * 扫描出所有带编号的正文文件，返回相对 DOC_ROOT 的路径。
+ *
+ * 这里用同步读目录，因为 rewrites 必须在 defineConfig 时就给出来，
+ * 不能等异步完成。
+ */
+function collectNumberedFiles(dir: string, base: string, out: string[] = []): string[] {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === '.vitepress' || entry.name === 'public') continue
+    const abs = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      collectNumberedFiles(abs, base, out)
+    } else if (/^\d{3}-.+\.md$/.test(entry.name)) {
+      out.push(path.relative(base, abs).replace(/\\/g, '/'))
+    }
+  }
+  return out
+}
+
+const REWRITES = Object.fromEntries(
+  collectNumberedFiles(DOC_ROOT, DOC_ROOT).map(f => [f, stripOrderPrefix(f)])
+)
+
+const vpConfig = defineConfig({
   title: SITE_TITLE,
   description: SITE_DESCRIPTION,
   lang: 'zh-CN',
@@ -37,6 +81,11 @@ export default defineConfig({
   lastUpdated: true,
 
   base: BASE,
+
+  // 文件名带编号只为在文件系统里好找，线上地址不带编号：
+  // cpp/020-multibyte.md 仍然发布在 /cpp/multibyte。
+  // 映射由扫描目录得出，新增文件不用改配置。
+  rewrites: REWRITES,
 
   sitemap: {
     // VitePress 把页面 URL（不含 base）直接交给 sitemap 库，且该库会用 hostname 的
@@ -67,75 +116,6 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '文档', link: '/guide/install' }
-    ],
-
-    // 侧边栏按学习顺序排成一条线：先跑通环境，再学 C 语言基础，
-    // 标准库参考放最后并默认折叠，避免一屏塞满。
-    sidebar: [
-      {
-        text: '入门',
-        items: [
-          { text: '搭建开发环境', link: '/guide/install' },
-          { text: '跑通「Hello World」', link: '/guide/first-program' }
-        ]
-      },
-      {
-        text: 'C++ 基础',
-        items: [
-          { text: 'C++ 简介', link: '/cpp/intro' },
-          { text: '基本语法', link: '/cpp/syntax' },
-          { text: '变量', link: '/cpp/variable' },
-          { text: '运算符', link: '/cpp/operator' },
-          { text: '流程控制', link: '/cpp/flow-control' },
-          { text: '数据类型', link: '/cpp/types' },
-          { text: '指针', link: '/cpp/pointer' },
-          { text: '函数', link: '/cpp/function' },
-          { text: '数组', link: '/cpp/array' },
-          { text: '字符串', link: '/cpp/string' },
-          { text: '内存管理', link: '/cpp/memory' },
-          { text: '结构体', link: '/cpp/struct' },
-          { text: 'typedef 与 using', link: '/cpp/typedef' },
-          { text: '联合体', link: '/cpp/union' },
-          { text: '枚举', link: '/cpp/enum' },
-          { text: '预处理器', link: '/cpp/preprocessor' },
-          { text: '输入输出', link: '/cpp/io' },
-          { text: '文件操作', link: '/cpp/file' },
-          { text: '变量说明符', link: '/cpp/specifier' },
-          { text: '多文件项目', link: '/cpp/multifile' },
-          { text: '命令行环境', link: '/cpp/cli' },
-          { text: '字符编码', link: '/cpp/multibyte' }
-        ]
-      },
-      {
-        text: '标准库参考',
-        collapsed: true,
-        items: [
-          { text: 'assert.h', link: '/c/lib/assert-h' },
-          { text: 'ctype.h', link: '/c/lib/ctype-h' },
-          { text: 'errno.h', link: '/c/lib/errno-h' },
-          { text: 'float.h', link: '/c/lib/float-h' },
-          { text: 'inttypes.h', link: '/c/lib/inttypes-h' },
-          { text: 'iso646.h', link: '/c/lib/iso646-h' },
-          { text: 'limits.h', link: '/c/lib/limits-h' },
-          { text: 'locale.h', link: '/c/lib/locale-h' },
-          { text: 'math.h', link: '/c/lib/math-h' },
-          { text: 'signal.h', link: '/c/lib/signal-h' },
-          { text: 'stdarg.h', link: '/c/lib/stdarg-h' },
-          { text: 'stdbool.h', link: '/c/lib/stdbool-h' },
-          { text: 'stddef.h', link: '/c/lib/stddef-h' },
-          { text: 'stdint.h', link: '/c/lib/stdint-h' },
-          { text: 'stdio.h', link: '/c/lib/stdio-h' },
-          { text: 'stdlib.h', link: '/c/lib/stdlib-h' },
-          { text: 'string.h', link: '/c/lib/string-h' },
-          { text: 'time.h', link: '/c/lib/time-h' },
-          { text: 'wchar.h', link: '/c/lib/wchar-h' },
-          { text: 'wctype.h', link: '/c/lib/wctype-h' }
-        ]
-      },
-      {
-        text: '关于本站',
-        items: [{ text: '来源与致谢', link: '/about/credits' }]
-      }
     ],
 
     socialLinks: [
@@ -201,6 +181,40 @@ export default defineConfig({
   }
 })
 
+/**
+ * 侧边栏由 vitepress-sidebar 扫描 docs/ 生成，不在这里逐个列页面：
+ *   目录 → 分组，分组名与分组顺序取自该目录下的 sidebar.config.json
+ *   文件 → 条目，标题取自 frontmatter 的 title，顺序由文件名编号决定
+ * 新增、删除、重命名一篇文档都不用再动这个文件。
+ *
+ * 用 withSidebar 而不是直接把 generateSidebar() 塞进 themeConfig.sidebar，
+ * 是因为前者额外挂了一个 Vite 插件：dev 下增删 md 会重建侧边栏，
+ * 否则不重启 dev server 就看不到新章节，容易让人以为生成没生效又去手写。
+ * 该插件的做法是 touch 配置文件触发整体重载，所以下面对 sidebar 的改写也会一并重跑。
+ */
+const siteConfig = withSidebar(vpConfig, {
+  documentRootPath: DOC_ROOT,
+  // 标题优先取 frontmatter 的 title，没有 title 的（guide 两篇）退回正文首个 H1
+  useTitleFromFrontmatter: true,
+  useTitleFromFileHeading: true,
+  // 页面不再逐篇写 order：文件名编号已经表达了顺序，默认扫描顺序即文件名顺序。
+  // 这里仍要开这个选项，是因为分组顺序（sidebar.config.json 的 $folder.order）靠它生效。
+  sortMenusByFrontmatterOrder: true,
+  frontmatterOrderDefaultValue: 999,
+  includeEmptyFolder: false
+})
+
+/**
+ * 插件按真实文件名生成链接，带编号（/cpp/020-multibyte），
+ * 而 rewrites 已经把线上地址还原成 /cpp/multibyte。
+ * 不改这里的话侧边栏每一条都是死链。
+ */
+siteConfig.themeConfig!.sidebar = stripOrderPrefixFromSidebar(
+  siteConfig.themeConfig!.sidebar as unknown as SidebarEntry[]
+) as never
+
+export default siteConfig
+
 /* ---------- 构建钩子：robots.txt 与 feed.xml ---------- */
 
 interface MarkdownPage {
@@ -209,6 +223,21 @@ interface MarkdownPage {
   title: string
   description: string
   date: Date
+}
+
+/** 侧边栏条目。只关心 link 与子条目，其余字段原样透传。 */
+interface SidebarEntry {
+  link?: string
+  items?: SidebarEntry[]
+  [key: string]: unknown
+}
+
+function stripOrderPrefixFromSidebar(entries: SidebarEntry[]): SidebarEntry[] {
+  return entries.map(entry => ({
+    ...entry,
+    ...(entry.link ? { link: stripOrderPrefix(entry.link) } : {}),
+    ...(entry.items ? { items: stripOrderPrefixFromSidebar(entry.items) } : {})
+  }))
 }
 
 async function walkMarkdown(dir: string, base: string, out: MarkdownPage[]): Promise<void> {
@@ -223,8 +252,10 @@ async function walkMarkdown(dir: string, base: string, out: MarkdownPage[]): Pro
     const raw = await fs.readFile(abs, 'utf8')
     const { title, description } = parseFrontmatter(raw, abs)
     const rel = path.relative(base, abs).replace(/\\/g, '/')
+    // 与 rewrites 对齐：文件名带编号，地址不带
+    const clean = stripOrderPrefix(rel)
     // 根目录的 index.md 就是首页本身，不能变成 /index
-    let url = rel === 'index.md' ? '/' : '/' + rel.replace(/\.md$/, '')
+    let url = clean === 'index.md' ? '/' : '/' + clean.replace(/\.md$/, '')
     if (url !== '/' && url.endsWith('/')) url = url.slice(0, -1)
     const stat = await fs.stat(abs)
     out.push({
@@ -250,13 +281,21 @@ async function walkMarkdown(dir: string, base: string, out: MarkdownPage[]): Pro
  */
 async function lastCommitDate(file: string, fallback: Date): Promise<Date> {
   try {
+    // --follow 是为了跨过重命名：正文文件名带编号后，不带 --follow 的 git log
+    // 只认改名后的新路径，查到的是改名那次提交。
     const { stdout } = await execFileAsync(
       'git',
-      ['log', '-1', '--format=%cI', '--', path.basename(file)],
+      ['log', '--follow', '--format=%x00%cI', '--name-status', '--', path.basename(file)],
       { cwd: path.dirname(file) }
     )
-    const iso = stdout.trim()
-    if (iso) {
+    // 标记放在日期之前，按 \0 切开后每段是「日期\n 状态\t路径 …」
+    for (const block of stdout.split('\0').slice(1)) {
+      const [iso, ...statusLines] = block.split('\n').map(l => l.trim()).filter(Boolean)
+      // 相似度 100% 的改名没有改动内容，不算「更新」，跳过继续往前找；
+      // 否则一次批量改名会把 feed 里所有条目的日期刷成同一天。
+      const isPureRename =
+        statusLines.length > 0 && statusLines.every(l => l.startsWith('R100\t'))
+      if (isPureRename) continue
       const d = new Date(iso)
       if (!Number.isNaN(d.getTime())) return d
     }
