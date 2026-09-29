@@ -25,7 +25,7 @@ tax rate
 don't
 ```
 
-有些词在语言里有特殊含义，不能拿来当变量名，它们叫**关键字（keyword）**。C++ 的关键字比 C 多，常用的列举如下：
+有些词在语言里有特殊含义，不能拿来当变量名，它们叫**关键字（keyword）**。C++ 的关键字列举如下：
 
 > alignas, alignof, auto, bool, break, case, catch, char, class, const, constexpr, continue, default, delete, do, double, else, enum, explicit, extern, false, float, for, friend, goto, if, inline, int, long, mutable, namespace, new, noexcept, nullptr, operator, private, protected, public, register, reinterpret_cast, return, short, signed, sizeof, static, static_cast, struct, switch, template, this, throw, true, try, typedef, typename, union, unsigned, using, virtual, void, volatile, while
 
@@ -90,7 +90,7 @@ int num = 42;
 int x = 1, y = 2;
 ```
 
-C++ 里还有一点和 C 不同：**全局变量**和 `static` 变量如果没显式赋值，会被自动清零。竞赛代码常把数组开成全局的，为的是得到“自动初始化成 0”。局部变量不适用这条规则，必须先赋值再使用。
+C++ 中**全局变量**和 `static` 变量如果没显式赋值，会被自动清零。函数内的 `auto` 局部变量（即不带 `static` 的局部变量）不适用这条规则，声明后值是随机的，必须先赋值再使用。竞赛代码常把数组开成全局的，为的是得到“自动初始化成 0”。
 
 赋值表达式本身有值，等于等号右边的值，因此可以连环赋值：
 

@@ -199,7 +199,7 @@ cout << "a" << endl; // 不推荐：换行 + 刷新缓冲
 
 ### 基本用法
 
-`printf`（print formatted，格式化打印）来自 `<cstdio>`，跟 C 里的 `printf` 是一回事。
+`printf`（print formatted，格式化打印）由头文件 `<cstdio>` 提供。它的第一个参数是格式串：普通字符原样输出，以 `%` 开头的占位符由后面的参数依次填入。
 
 ```cpp
 printf("Hello World");
@@ -340,4 +340,4 @@ using namespace std;
 
 关于头文件、`#include` 以及 `bits/stdc++.h` 到底是什么，见《预处理器》一章。
 
-C++ 里表示 C 标准库头文件时，习惯写成 `<cstdio>`、`<cstring>` 这种形式（把 `.h` 换成前缀 `c`），表示“这是 C 的头文件，但内容被放进了 `std` 命名空间”。它们和 C 里的 `<stdio.h>`、`<string.h>` 一一对应，功能相同。
+C++ 标准库中有一批以 `c` 开头的头文件，如 `<cstdio>`、`<cstring>`、`<cstdlib>`、`<cmath>`，分别提供格式化输入输出、字符串处理、通用工具、数学计算这几组函数，其中的名字位于 `std` 命名空间。`<cstdio>` 这类名称由 C 标准库的 `<stdio.h>` 演变而来。

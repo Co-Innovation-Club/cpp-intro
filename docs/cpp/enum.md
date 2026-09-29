@@ -4,7 +4,7 @@ description: "枚举（enum）把一组有名字的整数常量打包成一个�
 ---
 # 枚举
 
-如果一种类型的取值只有少数几种可能，每种取值还有明确的含义，把它们的名字定义出来，代码会比裸写数字好读得多。C 语言为此提供了 `enum`，中文叫**枚举（enumeration）**，C++ 完整继承下来，并在 C++11 里做了增强。
+如果一种类型的取值只有少数几种可能，每种取值还有明确的含义，把它们的名字定义出来，代码会比裸写数字好读得多。C++ 为此提供了 `enum`，中文叫**枚举（enumeration）**，C++11 又在此基础上增加了强类型版本。
 
 ```cpp
 enum colors { RED, GREEN, BLUE };
@@ -35,14 +35,14 @@ cout << c << '\n';  // 2
 
 ## 起别名与匿名枚举
 
-C 里要用 `typedef` 给枚举起别名：
+枚举也可以先不写类型名，再借助类型别名给它一个名字：
 
 ```cpp
 typedef enum { SHEEP, WHEAT, WOOD, BRICK, ORE } RESOURCE;
 RESOURCE r;
 ```
 
-同样，C++ 里这层 `typedef` 可以省掉，直接给枚举起名字：
+不过 C++ 里没有必要绕这一圈，直接给枚举起名字即可：
 
 ```cpp
 enum Resource { SHEEP, WHEAT, WOOD, BRICK, ORE };

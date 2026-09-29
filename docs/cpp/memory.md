@@ -31,13 +31,13 @@ int a[N];    // 全局数组：自动清零，也不占用栈空间
 int cnt[N];  // 计数数组同样受益于"自动清零"
 ```
 
-数组长度需要在运行时确定时，竞赛代码优先使用 `vector`，而不是手动在堆上申请内存。这一点是本章和 C 语言的内存讲解最大的不同。
+数组长度需要在运行时确定时，竞赛代码优先使用 `vector`，而不是手动在堆上申请内存。
 
 ## void 指针
 
 每一块内存都有地址，指针变量用来存地址。但指针必须有类型，否则编译器不知道怎么解读这段二进制——同样的 4 个字节，按 `int` 读是一个数，按 `float` 读是另一个数。
 
-有些场合只关心地址、不关心类型。为此 C 和 C++ 提供了 `void` 指针：它只有地址，没有类型信息。任意类型的指针都能隐式转成 `void*`：
+有些场合只关心地址、不关心类型。为此 C++ 提供了 `void` 指针：它只有地址，没有类型信息。任意类型的指针都能隐式转成 `void*`：
 
 ```cpp
 int x = 10;
@@ -46,7 +46,7 @@ void* p = &x;                    // int* 隐式转成 void*
 int* q = static_cast<int*>(p);   // 转回来必须显式转换
 ```
 
-注意第二行。C 里写 `int* q = p;` 就能编译，C++ 不允许 `void*` 隐式转成别的指针类型，必须加一个 `static_cast`。显式转换用于确认该地址中存放的确实是 `int`。
+第二行的转换不能省。C++ 不允许 `void*` 隐式转成别的指针类型，必须写一次 `static_cast`。显式转换的作用在于确认该地址中存放的确实是 `int`。
 
 不能用 `*` 取出 `void` 指针指向的值，因为编译器不知道该按几字节、按什么格式读：
 
@@ -122,7 +122,7 @@ a.resize(n);        // 直接要 n 个元素
 
 ## malloc()
 
-`malloc`（memory allocation）来自 `<cstdlib>`，对应 C 的 `<stdlib.h>`：
+`malloc`（memory allocation）在标准库头文件 `<cstdlib>` 中声明，`<cstdlib>` 提供内存分配、随机数、字符串转数值这几类函数：
 
 ```cpp
 void* malloc(size_t size);
@@ -238,7 +238,7 @@ b = realloc(b, sizeof(int) * 2000);   // 从 10 个 int 扩到 2000 个
 
 ## restrict 说明符
 
-`restrict` 是 C99 引入的指针说明符。它向编译器承诺：这块内存只通过这一个指针访问，不存在第二个指针指向它。
+`restrict` 是一个指针说明符。它向编译器承诺：这块内存只通过这一个指针访问，不存在第二个指针指向它。
 
 ```cpp
 int* restrict p = (int*)malloc(sizeof(int));
@@ -256,7 +256,7 @@ int* q = p;
 
 ## memcpy()
 
-`memcpy`（memory copy）来自 `<cstring>`，对应 C 的 `<string.h>`，作用是把一段内存按字节复制到另一段：
+`memcpy`（memory copy）在标准库头文件 `<cstring>` 中声明，`<cstring>` 提供按字节处理内存块的一组函数。`memcpy` 的作用是把一段内存按字节复制到另一段：
 
 ```cpp
 void* memcpy(void* dest, const void* src, size_t n);
