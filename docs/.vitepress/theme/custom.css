@@ -94,29 +94,17 @@
   backdrop-filter: saturate(180%) blur(14px);
 }
 
-/* 导航栏底部的分隔线（.divider-line）：修掉侧栏残留的让位
+/* 导航栏底部的分隔线（.divider-line）：深色下的颜色修正
  *
  * VitePress 导航栏底部有一个专门画分隔线的元素：
  *   <div class="divider"><div class="divider-line" /></div>
  * 高 1px、宽 100%，颜色取 --vp-c-gutter。
  *
- * 但 @media (min-width:1440px) 给 .VPNavBar.has-sidebar .divider 加了
- * padding-left: calc((100vw - 1440px)/2 + 272px)——本意是让这条线
- * 从侧边栏右缘起画，与 272px 侧栏错开。本站内页已无侧栏，
- * 这个缩进没人接，线就从 x≈352（搜索框起点）才开始，
- * 左侧标题区下方缺一段，看起来像「凭空多出一条线」。
- *
- * 两处修正：
- *   1. 去掉 padding-left，让线从最左贯穿到最右，成为一条完整的分隔
- *   2. 颜色由 --vp-c-gutter（深色下是纯黑 rgb(0,0,0)，压在正文上很硬）
- *      换成 --vp-c-divider，与站内其它分隔线同一口径
+ * 深色下 --vp-c-gutter 是纯黑 rgb(0,0,0)，比页面底色 #12141a 还暗，
+ * 压在正文上像一道阴影缝，与站内其它分隔线（--vp-c-divider）不是一套。
+ * 改成分隔色，统一口径。分隔线从侧边栏右缘起画的缩进
+ * 由 VitePress 默认规则负责，不再覆盖。
  */
-@media (min-width: 1440px) {
-  .Layout:not(.cover-page) .VPNavBar.has-sidebar .divider {
-    padding-left: 0;
-  }
-}
-
 .Layout:not(.cover-page) .VPNavBar .divider-line {
   background-color: var(--vp-c-divider) !important;
 }
@@ -132,24 +120,13 @@
  * 内层 .content-body 是一块实心黑（从搜索框起点铺到菜单右侧）。
  * 结果就是标题区透、右侧实，两段之间出现一道生硬的色差截断。
  *
- * 内页已无侧栏，这层实底从「必要遮挡」变成「多余补丁」，故置透明——
- * 遮挡交给外层毛玻璃即可，它贯穿整条、颜色一致。
+ * 故内页同样置透明，遮挡交给外层毛玻璃——它贯穿整条、颜色一致，
+ * 深浅两套底色（--glass-bg）已按可读性校准过（见文件顶部）。
  */
 @media (min-width: 960px) {
   .Layout:not(.cover-page) .VPNavBar .content-body {
     background-color: transparent !important;
   }
-}
-
-/* 内页导航栏标题下那条分隔线：这是给左侧栏收口用的
- *
- * VitePress 原版在 .VPNavBarTitle.has-sidebar .title 上加 border-bottom，
- * 本意是让它与下方 272px 宽的侧边栏连成一条。本站内页已拆除侧边栏
- * （见下方「内页：与首页同一套版式」），这条线失去依附对象，
- * 只剩一段悬空的短线，等于把「这里原先是侧栏」暴露出来。故置为透明。
- */
-.VPNavBarTitle.has-sidebar .title {
-  border-bottom-color: transparent !important;
 }
 
 /* 导航栏：首页与内页同构（搜索框、右侧控件组逐像素对齐）
@@ -211,114 +188,24 @@
   }
 }
 
-/* 内页：与首页同一套版式——一条通栏，正文居中，不留侧边栏竖条
+/* 内页版式：VitePress 默认的固定侧边栏
  *
- * VitePress 默认把内页做成「左侧 272px 侧边栏 + 右侧正文」的分栏结构，
- * 靠三个元素共同撑起那道竖条：
- *   .curtain    侧边栏顶到导航栏的 64px 底色块
- *   .VPSidebar  侧边栏本体（fixed，自带底色与右分隔）
- *   .VPContent  正文容器的 padding-left: 272px
- * 三者任一留着都会露出分割，故须一并解除。
+ * 此前内页曾隐藏侧边栏、正文整页居中，目录走一个悬浮收起式组件
+ * （FloatNav，已随本次改动移除）。为了严肃阅读，内页恢复 VitePress
+ * 默认版式：左侧 272px 常驻侧边栏 + 右侧正文与目录（outline），
+ * 目录全程可见，不依赖任何点击或悬停展开。
  *
- * 侧边栏收起后，内页的站内导航改由导航栏的「文档」进入；
- * 正文之间用页面底部的上一页/下一页衔接。960px 以下本就是移动布局，
- * 侧边栏走抽屉，不受这段影响。
- *
- * 正文容器用与首页 cover__inner 相同的口径（1180px，≥1440px 时 1240px，
- * 两侧 24px 内缩），使两处的正文左缘落在同一条线上。
- * 目录仍留在正文右侧，它不是分割条。
- *
- * 容器宽度取 fit-content 而非撑满：VitePress 的 .aside 带 flex-grow: 1，
- * 容器一旦撑满就会把正文挤到左侧、中间空出几百像素。改成贴合内容后，
- * 正文与目录保持 32px 间距，整组在页面居中。
+ * 当年为隐藏侧栏写的补丁（藏 .curtain/.VPSidebar、正文容器居中限宽、
+ * 目录绝对定位到正文右缘等）随之一并移除——默认规则即最终形态，
+ * 不再需要为它解释让位。首页（cover-page）仍是自己的通栏版式，不受影响。
  */
-@media (min-width: 960px) {
-  .Layout:not(.cover-page) .curtain,
-  .Layout:not(.cover-page) .VPSidebar {
-    display: none;
-  }
-
-  /* 去掉 VitePress 给「限宽布局」留的两侧内边距。
-   *
-   * 它在 ≥1440px 时写的是 padding-right: calc((100vw - 1440px) / 2)，
-   * 本意是把「正文 + 侧栏」合计限宽在 1440px 内居中；左侧那条
-   * padding-left 里还叠了 272px 的侧栏宽。
-   * 本站内页已无侧栏、正文改为整页居中，这两条都失去意义：
-   * 尤其右内边距会把整块内容整体推左（1920px 下 240px，
-   * 表现为正文中心比视口中心偏左 120px）。故一并归零。 */
-  .Layout:not(.cover-page) .VPContent.has-sidebar {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc {
-    max-width: 1180px;
-    margin-inline: auto;
-    padding-inline: 24px;
-    box-sizing: border-box;
-  }
-
-  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container {
-    width: fit-content;
-    margin-inline: auto;
-  }
-
-  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container .aside {
-    flex: 0 0 auto;
-  }
-}
-
-/* 正文在视口里居中，目录挂到正文右侧、不参与居中计算
- *
- * 上面那段把 .container 设为 fit-content 居中，居中的其实是
- * 「正文 + 目录」这一整组，于是正文被右侧的目录挤得偏左——
- * 实测各档位恒定偏 −128px（正好是目录宽 256px 的一半）。
- *
- * 改为：容器退回普通块，正文自己居中；目录绝对定位到正文右缘外侧。
- * 这样正文的中心落在视口中心上，目录仍跟随滚动贴在右侧。
- *
- * 只在 ≥1280px 生效：VitePress 本就在 1280px 以下隐藏目录，
- * 那种情况下原来的 fit-content 居中已经正确（实测偏移 0）。
- */
-@media (min-width: 1280px) {
-  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container {
-    position: relative;
-    display: block;
-    width: auto;
-    margin-inline: 0;
-  }
-
-  /* 640px = 正文栏宽 576px + 两侧各 32px 内边距，与改动前一致 */
-  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container .content {
-    max-width: 640px;
-    margin-inline: auto;
-  }
-
-  /* 352px = 正文栏半宽 320px + 正文与目录之间 32px */
-  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc .container .aside {
-    position: absolute;
-    top: 0;
-    left: calc(50% + 352px);
-    width: 224px;
-    max-width: none;
-    height: 100%;
-    padding-left: 0;
-  }
-}
-
-@media (min-width: 1440px) {
-  .Layout:not(.cover-page) .VPContent.has-sidebar .VPDoc {
-    max-width: 1240px;
-  }
-}
 
 /* 内页页脚
  *
  * VitePress 默认有 .VPFooter.has-sidebar { display: none }，
  * 理由是「带侧栏的文档页底部已有上一篇/下一篇，页脚多余」。
- * 本站只是用 CSS 把侧栏藏了起来，body 上的 has-sidebar 类还在，
- * 于是首页之外的页面页脚全被这条规则吃掉——
- * 页脚里的 message 与版权标识只在首页出现，内页看不到。
+ * 但本站页脚承载着「立象尽意」与 CC BY 4.0 版权标识，
+ * 若按默认规则，这些信息只在首页出现，内页看不到。
  *
  * 这里把内页的页脚显示回来。加 .Layout:not(.cover-page) 是为了排除首页：
  * 首页走的是首页自己的版式，不受这条影响。
