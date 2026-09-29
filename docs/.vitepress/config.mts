@@ -69,6 +69,8 @@ export default defineConfig({
       { text: '文档', link: '/guide/install' }
     ],
 
+    // 侧边栏按学习顺序排成一条线：先跑通环境，再学 C 语言基础，
+    // 标准库参考放最后并默认折叠，避免一屏塞满。
     sidebar: [
       {
         text: '入门',
@@ -76,6 +78,63 @@ export default defineConfig({
           { text: '搭建开发环境', link: '/guide/install' },
           { text: '跑通「Hello World」', link: '/guide/first-program' }
         ]
+      },
+      {
+        text: 'C 语言基础',
+        items: [
+          { text: 'C 语言简介', link: '/c/intro' },
+          { text: '基本语法', link: '/c/syntax' },
+          { text: '变量', link: '/c/variable' },
+          { text: '运算符', link: '/c/operator' },
+          { text: '流程控制', link: '/c/flow-control' },
+          { text: '数据类型', link: '/c/types' },
+          { text: '指针', link: '/c/pointer' },
+          { text: '函数', link: '/c/function' },
+          { text: '数组', link: '/c/array' },
+          { text: '字符串', link: '/c/string' },
+          { text: '内存管理', link: '/c/memory' },
+          { text: 'struct 结构', link: '/c/struct' },
+          { text: 'typedef 命令', link: '/c/typedef' },
+          { text: 'Union 结构', link: '/c/union' },
+          { text: 'Enum 类型', link: '/c/enum' },
+          { text: '预处理器', link: '/c/preprocessor' },
+          { text: 'I/O 函数', link: '/c/io' },
+          { text: '文件操作', link: '/c/file' },
+          { text: '变量说明符', link: '/c/specifier' },
+          { text: '多文件项目', link: '/c/multifile' },
+          { text: '命令行环境', link: '/c/cli' },
+          { text: '多字节字符', link: '/c/multibyte' }
+        ]
+      },
+      {
+        text: '标准库参考',
+        collapsed: true,
+        items: [
+          { text: 'assert.h', link: '/c/lib/assert-h' },
+          { text: 'ctype.h', link: '/c/lib/ctype-h' },
+          { text: 'errno.h', link: '/c/lib/errno-h' },
+          { text: 'float.h', link: '/c/lib/float-h' },
+          { text: 'inttypes.h', link: '/c/lib/inttypes-h' },
+          { text: 'iso646.h', link: '/c/lib/iso646-h' },
+          { text: 'limits.h', link: '/c/lib/limits-h' },
+          { text: 'locale.h', link: '/c/lib/locale-h' },
+          { text: 'math.h', link: '/c/lib/math-h' },
+          { text: 'signal.h', link: '/c/lib/signal-h' },
+          { text: 'stdarg.h', link: '/c/lib/stdarg-h' },
+          { text: 'stdbool.h', link: '/c/lib/stdbool-h' },
+          { text: 'stddef.h', link: '/c/lib/stddef-h' },
+          { text: 'stdint.h', link: '/c/lib/stdint-h' },
+          { text: 'stdio.h', link: '/c/lib/stdio-h' },
+          { text: 'stdlib.h', link: '/c/lib/stdlib-h' },
+          { text: 'string.h', link: '/c/lib/string-h' },
+          { text: 'time.h', link: '/c/lib/time-h' },
+          { text: 'wchar.h', link: '/c/lib/wchar-h' },
+          { text: 'wctype.h', link: '/c/lib/wctype-h' }
+        ]
+      },
+      {
+        text: '关于本站',
+        items: [{ text: '来源与致谢', link: '/about/credits' }]
       }
     ],
 
@@ -112,8 +171,10 @@ export default defineConfig({
 
     footer: {
       message: '立象尽意',
+      // 「C 语言基础」栏目的署名落在这里：CC BY-SA 4.0 要求署名须为读者
+      // 在正常浏览时可见，页脚每页都在，同时不打断正文阅读。
       copyright:
-        '© 2026 Co-Innovation-Club · <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="noopener">CC BY 4.0</a>'
+        '© 2026 Co-Innovation-Club · 部分内容改编自 <a href="https://github.com/wangdoc/clang-tutorial" target="_blank" rel="noopener">wangdoc/clang-tutorial</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-SA 4.0</a>'
     },
 
     returnToTopLabel: '回到顶部',
