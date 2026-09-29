@@ -3,7 +3,7 @@ layout: page
 pageClass: cover-page
 aside: false
 sidebar: false
-description: C++ 入门文档，包含开发环境搭建、首个程序运行、C++ 基础语法与标准库参考
+description: C++ 入门文档，包含开发环境搭建、首个程序运行与 C++ 基础语法
 ---
 
 <CoverHero />

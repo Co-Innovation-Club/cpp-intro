@@ -37,11 +37,6 @@ description: "本站内容来源、署名信息与许可说明"
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.zh) 许可发布。
 使用时须注明上表中的作者与来源，并以相同许可发布衍生作品。
 
-## 标准库参考
-
-「标准库参考」栏目（[`docs/c/lib/`](https://github.com/co-innovation-club/cpp-intro/tree/main/docs/c/lib)，
-即站点上的 `/c/lib/` 路径）同样来自上述《C 语言入门教程》，内容未作改写。
-
 ## 本站其它内容
 
 除上述改编栏目外，本站其余内容（含《搭建开发环境》《跑通「Hello World」》及首页、主题样式等）由 Co-Innovation-Club 编写。
