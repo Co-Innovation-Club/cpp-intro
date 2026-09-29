@@ -80,30 +80,30 @@ export default defineConfig({
         ]
       },
       {
-        text: 'C 语言基础',
+        text: 'C++ 基础',
         items: [
-          { text: 'C 语言简介', link: '/c/intro' },
-          { text: '基本语法', link: '/c/syntax' },
-          { text: '变量', link: '/c/variable' },
-          { text: '运算符', link: '/c/operator' },
-          { text: '流程控制', link: '/c/flow-control' },
-          { text: '数据类型', link: '/c/types' },
-          { text: '指针', link: '/c/pointer' },
-          { text: '函数', link: '/c/function' },
-          { text: '数组', link: '/c/array' },
-          { text: '字符串', link: '/c/string' },
-          { text: '内存管理', link: '/c/memory' },
-          { text: 'struct 结构', link: '/c/struct' },
-          { text: 'typedef 命令', link: '/c/typedef' },
-          { text: 'Union 结构', link: '/c/union' },
-          { text: 'Enum 类型', link: '/c/enum' },
-          { text: '预处理器', link: '/c/preprocessor' },
-          { text: 'I/O 函数', link: '/c/io' },
-          { text: '文件操作', link: '/c/file' },
-          { text: '变量说明符', link: '/c/specifier' },
-          { text: '多文件项目', link: '/c/multifile' },
-          { text: '命令行环境', link: '/c/cli' },
-          { text: '多字节字符', link: '/c/multibyte' }
+          { text: 'C++ 简介', link: '/cpp/intro' },
+          { text: '基本语法', link: '/cpp/syntax' },
+          { text: '变量', link: '/cpp/variable' },
+          { text: '运算符', link: '/cpp/operator' },
+          { text: '流程控制', link: '/cpp/flow-control' },
+          { text: '数据类型', link: '/cpp/types' },
+          { text: '指针', link: '/cpp/pointer' },
+          { text: '函数', link: '/cpp/function' },
+          { text: '数组', link: '/cpp/array' },
+          { text: '字符串', link: '/cpp/string' },
+          { text: '内存管理', link: '/cpp/memory' },
+          { text: '结构体', link: '/cpp/struct' },
+          { text: 'typedef 与 using', link: '/cpp/typedef' },
+          { text: '联合体', link: '/cpp/union' },
+          { text: '枚举', link: '/cpp/enum' },
+          { text: '预处理器', link: '/cpp/preprocessor' },
+          { text: '输入输出', link: '/cpp/io' },
+          { text: '文件操作', link: '/cpp/file' },
+          { text: '变量说明符', link: '/cpp/specifier' },
+          { text: '多文件项目', link: '/cpp/multifile' },
+          { text: '命令行环境', link: '/cpp/cli' },
+          { text: '字符编码', link: '/cpp/multibyte' }
         ]
       },
       {
@@ -171,8 +171,8 @@ export default defineConfig({
 
     footer: {
       message: '立象尽意',
-      // 「C 语言基础」栏目的署名落在这里：CC BY-SA 4.0 要求署名须为读者
-      // 在正常浏览时可见，页脚每页都在，同时不打断正文阅读。
+      // 「C++ 基础」栏目改编自 wangdoc 的 C 语言教程，署名落在这里：CC BY-SA 4.0 要求
+      // 署名须为读者在正常浏览时可见，页脚每页都在，同时不打断正文阅读。
       copyright:
         '© 2026 Co-Innovation-Club · 部分内容改编自 <a href="https://github.com/wangdoc/clang-tutorial" target="_blank" rel="noopener">wangdoc/clang-tutorial</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-SA 4.0</a>'
     },
