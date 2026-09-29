@@ -8,7 +8,7 @@ description: "变量（variable）是一块内存区域的名字。通过变量�
 
 ## 变量名
 
-变量名属于**标识符（identifier）**，命名有严格规定：
+变量名属于**标识符**（identifier），命名有严格规定：
 
 - 只能由字母、数字和下划线 `_` 组成；
 - 不能以数字开头；
@@ -25,7 +25,7 @@ tax rate
 don't
 ```
 
-有些词在语言里有特殊含义，不能拿来当变量名，它们叫**关键字（keyword）**。C++ 的关键字列举如下：
+有些词在语言里有特殊含义，不能拿来当变量名，它们叫**关键字**（keyword）。C++ 的关键字列举如下：
 
 > alignas, alignof, auto, bool, break, case, catch, char, class, const, constexpr, continue, default, delete, do, double, else, enum, explicit, extern, false, float, for, friend, goto, if, inline, int, long, mutable, namespace, new, noexcept, nullptr, operator, private, protected, public, register, reinterpret_cast, return, short, signed, sizeof, static, static_cast, struct, switch, template, this, throw, true, try, typedef, typename, union, unsigned, using, virtual, void, volatile, while
 
@@ -53,7 +53,7 @@ int width;
 
 C++ 还提供了另外两种声明写法。
 
-**（1）列表初始化。** 用一对花括号给出初始值，写在声明处：
+（1）**列表初始化**。 用一对花括号给出初始值，写在声明处：
 
 ```cpp
 int num{42};
@@ -61,7 +61,7 @@ int num{42};
 
 花括号初始化不允许窄化转换，编译器会拦下放不进的值（比如用 `{1.5}` 去初始化 `int` 会报错），可以在编译期发现类型不匹配。
 
-**（2）`auto` 自动推导。** 由编译器根据初始值推导类型：
+（2）**`auto` 自动推导**。 由编译器根据初始值推导类型：
 
 ```cpp
 auto x = 1;      // x 是 int
@@ -103,13 +103,13 @@ int a, b, c;
 a = b = c = 3;     // 从右往左，依次赋值
 ```
 
-C++ 有**左值（lvalue）**和**右值（rvalue）**的概念。左值能放在 `=` 左边（一般是变量），右值只能放右边（一般是具体的值）。`x = 1` 合法，`1 = x` 会报错，就是这条规则的体现。
+C++ 有**左值**（lvalue）和**右值**（rvalue）的概念。左值能放在 `=` 左边（一般是变量），右值只能放右边（一般是具体的值）。`x = 1` 合法，`1 = x` 会报错，就是这条规则的体现。
 
 ## 变量的作用域
 
-**作用域（scope）**指变量生效的范围。C++ 的变量主要有两种作用域：文件作用域和块作用域。
+**作用域**（scope）指变量生效的范围。C++ 的变量主要有两种作用域：文件作用域和块作用域。
 
-**文件作用域（file scope）**：在源码文件最外层声明的变量，从声明处到文件结尾都有效。
+**文件作用域**（file scope）：在源码文件最外层声明的变量，从声明处到文件结尾都有效。
 
 ```cpp
 #include <bits/stdc++.h>
@@ -122,7 +122,7 @@ int main() {
 }
 ```
 
-**块作用域（block scope）**：由大括号 `{}` 界定的代码块是一个独立作用域。在块里声明的变量只在这个块里有效，出了块就不能访问。
+**块作用域**（block scope）：由大括号 `{}` 界定的代码块是一个独立作用域。在块里声明的变量只在这个块里有效，出了块就不能访问。
 
 ```cpp
 int a = 12;

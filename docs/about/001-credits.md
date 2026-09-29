@@ -25,7 +25,7 @@ description: "本站内容来源、署名信息与许可说明"
 
 - 将原本基于 loppo 的 Markdown 文档转换为 VitePress 站点格式，补充页面元信息（`title`、`description`）；
 - 调整文件命名与目录结构，接入本站侧边栏导航；
-- **将原稿的 C 语言内容改写为 C++（面向算法竞赛）**：代码示例改用 `#include <bits/stdc++.h>`
+- **将原稿的 C 语言内容改写为 C++**（面向算法竞赛）：代码示例改用 `#include <bits/stdc++.h>`
   与 `using namespace std;`，输入输出以 `cin`/`cout` 为主，并引入 `string`、`vector` 等
   标准库用法；术语、章节标题与叙述语气随之调整，但保留原有章节划分与知识点覆盖范围。
 

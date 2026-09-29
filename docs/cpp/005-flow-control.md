@@ -68,7 +68,7 @@ else
     statement
 ```
 
-**`else` 与离它最近的那个 `if` 配对。**
+**`else` 与离它最近的那个 `if` 配对**。
 
 ```cpp
 if (number > 6)

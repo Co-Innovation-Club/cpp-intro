@@ -4,13 +4,13 @@ description: "枚举（enum）把一组有名字的整数常量打包成一个�
 ---
 # 枚举
 
-如果一种类型的取值只有少数几种可能，每种取值还有明确的含义，把它们的名字定义出来，代码会比裸写数字好读得多。C++ 为此提供了 `enum`，中文叫**枚举（enumeration）**，C++11 又在此基础上增加了强类型版本。
+如果一种类型的取值只有少数几种可能，每种取值还有明确的含义，把它们的名字定义出来，代码会比裸写数字好读得多。C++ 为此提供了 `enum`，中文叫**枚举**（enumeration），C++11 又在此基础上增加了强类型版本。
 
 ```cpp
 enum colors { RED, GREEN, BLUE };
 ```
 
-这里 `colors` 是一个新类型，只有三种取值：`RED`、`GREEN`、`BLUE`。这三个名字是**枚举常量（enumerator）**，编译器默认把它们依次赋成整数 `0`、`1`、`2`。
+这里 `colors` 是一个新类型，只有三种取值：`RED`、`GREEN`、`BLUE`。这三个名字是**枚举常量**（enumerator），编译器默认把它们依次赋成整数 `0`、`1`、`2`。
 
 ```cpp
 cout << RED << ' ' << GREEN << ' ' << BLUE << '\n';     // 0 1 2
@@ -111,7 +111,7 @@ enum {
 - 能隐式转成 `int`，也能从 `int` 隐式转回枚举类型，编译器不会对这种写法报错；
 - 底层类型不明确，大小由实现决定（通常是 `int`）。
 
-C++11 引入的 **`enum class`（强类型枚举）** 把这三条都补上了：
+C++11 引入的 **`enum class`**（强类型枚举） 把这三条都补上了：
 
 ```cpp
 enum class Color { Red, Green, Blue };
@@ -137,7 +137,7 @@ enum class Dir : unsigned char { Up, Right, Down, Left };   // 只占 1 字节
 
 ## 竞赛里的用法
 
-**表示方向。** 走迷宫、在网格上搜索时，四个方向写成枚举，含义比裸数字明确：
+**表示方向**。 走迷宫、在网格上搜索时，四个方向写成枚举，含义比裸数字明确：
 
 ```cpp
 #include <bits/stdc++.h>
@@ -173,7 +173,7 @@ for (int d = 0; d < 4; d++) {
 
 如果换成 `enum class Dir { Up, Right, Down, Left };`，`dx[Dir::Up]` 就得写成 `dx[(int)Dir::Up]` 或 `dx[static_cast<int>(Dir::Up)]`，每个下标都要显式转换。需要把枚举值当数组下标用时，通常选普通 `enum`。
 
-**表示状态。** 比如用 BFS 记录格子的访问情况：
+**表示状态**。 比如用 BFS 记录格子的访问情况：
 
 ```cpp
 enum State { UNVISITED, VISITING, VISITED };    // 0 1 2
